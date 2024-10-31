@@ -59,31 +59,62 @@ int main()
 // 배열 arr에 x가 몇 번 나오는지 반환
 int Count(int* arr, int n, int x)
 {
+	int count = 0;
 	// TODO:
-
-	return 0;
+	for (int i = 0; i < n; i++)
+		if (arr[i] == x)
+			count++;
+	return count;
 }
 
+// Linear search
 // 배열 arr에 x가 있으면 index 반환, 없으면 -1 반환
 int SequentialSearch(int* arr, int n, int x)
 {
 	// TODO:
+	// for문 구현
+	/*for (int i = 0; i < n; i++)
+		if (arr[i] == x)
+			return i;
+	return -1;*/
 
-	return -1;
+	// while문 구현
+	//int i = 0;
+	//while (i<n && arr[i] != x)
+	//{
+	//	if (arr[i] == x)
+	//		return i;
+	//	i++;
+	//}
+	//if (i == n) return -1;
+	//else return i;
+
+	// Horowitz 교재
+	//for (int i = 0; i < n && arr[i] != x; i++) { /* Do Nothing */ };
+	for (int i = 0; i < n && arr[i] != x; i++); // for문 뒤에 semi colon이 있다는 것은 아무것도 안 한 다는 의미
+	if (n == i) return -1;
+	else return i;
 }
 
 int SortedCountHelper(int* arr, int n, int x, int start) // start 사용
 {
+	int count = 0;
 	// TODO: 
-
-	return 0;
+	for (int i = start; i < n; i++)
+		if (arr[i] == x)
+			count++;
+		else
+			break;
+	return count;
 }
 
+// 정렬된 array에서 더 효율적으로 count하는 함수
+// 정렬을 통해 탐색의 효율성을 높일 수 있음
 int SortedCount(int* arr, int n, int x)
 {
 	int i = SequentialSearch(arr, n, x);
 
-	if (i >= 0)
+	if (i >= 0) // 찾고자 하는 값이 있으면
 		return SortedCountHelper(arr, n, x, i + 1) + 1;
 	else
 		return 0;
