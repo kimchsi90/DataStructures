@@ -62,12 +62,16 @@ int main()
 	for (int i = 0; i < 26; i++)
 	{
 		// 힌트: char(i + 97)
-
-		// 표를 만들고 나중에 몰아서 출력하는 방법
+		// 표를 만들고 나중에 몰아서 출력하는 방법(출력은 아래 for문에서)
 		// table[i] = ...
+		table[i] = Count(arr, n, char(i + 97));
 
 		// 표를 만들지 않고 직접 출력하는 방법
 		// ...
+		int count = 0;
+		count = Count(arr, n, char(i + 97));
+		if (count > 0)
+			cout << char(i+97) << count << flush;
 	}
 
 	cout << endl;
@@ -75,10 +79,13 @@ int main()
 	// 출력
 	for (int i = 0; i < 26; i++)
 	{
-		// ...
+		if (table[i] > 0)
+			cout << char(i + 97) << table[i] << flush;
 	}
 	cout << endl << endl;
 
+	// 위 방법은 Count 함수를 호출할 때마다 전체를 탐색하여 비효율적임
+	// 정렬을 사용하면 효율적으로 탐색 가능
 	// 풀이 2. 정렬 후 찾기
 	// 여기서는 별도의 문자열을 만드는 것이 아니라 출력이 목표
 	// Table도 만들지 않음
@@ -96,11 +103,14 @@ int main()
 	{
 		if (arr[i] == c)
 		{
-			// TODO: ...
+			count++;
 		}
 		else
 		{
-			// TODO: ...
+			cout << count;
+			count = 1;
+			c = arr[i];
+			cout << c;
 		}
 	}
 
