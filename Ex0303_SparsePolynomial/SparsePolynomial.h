@@ -29,6 +29,8 @@ public:
 	void Print();
 
 private:
+	// Term의 동적할당 메모리를 가지고 저장한다
+	// -> Term 자료형으로 이루어진 배열이라는 의미
 	Term* terms_ = nullptr;
 	int capacity_ = 0;
 	int num_terms_ = 0;

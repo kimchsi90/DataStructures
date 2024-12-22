@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cassert>
 #include <algorithm>
+#include <math.h>
 
 using namespace std;
 
@@ -17,9 +18,9 @@ void SparsePolynomial::NewTerm(float coef, int exp)
 	if (num_terms_ >= capacity_)
 	{
 		// capacity 증가 (num_terms는 일단 고정)
-		capacity_ = capacity_ > 0 ? capacity_ * 2 : 1; // 2배씩 증가
+		capacity_ = capacity_ > 0 ? capacity_ * 2 : 1; // 2배씩 증가(매번 메모리를 증가 시키는 것은 속도를 느리게 만들기 때문에 미리 여유공간을 잡아 놓는다.
 		Term* new_term = new Term[capacity_];
-
+		
 		// 원래 가지고 있던 데이터 복사
 		memcpy(new_term, terms_, sizeof(Term) * num_terms_);
 
@@ -39,6 +40,8 @@ float SparsePolynomial::Eval(float x)
 	float temp = 0.0f;
 
 	// TODO:
+	for (int i = 0; i < num_terms_; i++)
+		temp += terms_[i].coef * pow(x, terms_[i].exp);
 
 	return temp;
 }
@@ -55,6 +58,64 @@ SparsePolynomial SparsePolynomial::Add(const SparsePolynomial& poly)
 	// - 4. Polynomial을 SparsePolynomial로 변환한다.
 
 	SparsePolynomial temp;
+	// 1. 간단한 방법
+	//int max_exp = max(terms_[num_terms_ - 1].exp, poly.terms_[poly.num_terms_ - 1].exp);
+
+	//float* temp_array = new float[max_exp + 1]{}; // {} 중괄호를 넣으면 모든 동적 배열의 값을 0.0f로 초기화(int의 경우 0)
+
+	//for (int i = 0; i < num_terms_; i++)
+	//	temp_array[terms_[i].exp] += terms_[i].coef;
+	//for (int j = 0; j < poly.num_terms_; j++)
+	//	temp_array[poly.terms_[j].exp] += poly.terms_[j].coef;
+
+	//for (int i = 0; i <= max_exp; i++)
+	//{
+	//	if (temp_array[i] != 0.0f)
+	//		temp.NewTerm(temp_array[i], i);
+	//}
+
+
+	// 2. 시간복잡도를 줄이는 방법
+	
+	// 1) 더하려는 두 다항식의 index를 1씩 늘려 값을 비교(i만 먼저 탐색하고 그 다음 j를 탐색하는 것이 아니라 조건에 따라 i와 j의 값을 늘려 효율적으로 탐색)
+	// 2) 같을 경우 더하여 새로운 다항식의 exp, coef를 만든다.
+	// 3) 같지 않을 경우 index를 늘려 exp 값이 같은지 확인한다
+	int i = 0, j = 0;
+	int a_max_exp = terms_[num_terms_].exp;
+	int b_max_exp = poly.terms_[num_terms_].exp;
+
+	while (i < num_terms_ && j < poly.num_terms_)
+	{
+		float a_exp = terms_[i].exp;
+		float b_exp = poly.terms_[j].exp;
+		int a_coef = terms_[i].coef;
+		int b_coef = poly.terms_[j].coef;
+
+		if (a_exp == b_exp) // 차수가 같으면
+		{
+			temp.NewTerm(a_coef + b_coef, a_exp);
+			i++, j++;
+		}
+		else if (a_exp > b_exp) // a의 차수가 더 크면
+		{
+			temp.NewTerm(b_coef, b_exp);
+			j++;
+		}
+		else // (i < j) // b의 차수가 더 크면
+		{
+			temp.NewTerm(a_coef, b_exp);
+			i++;
+		}
+
+		if (terms_[i].exp >= a_max_exp)
+			for (int k = j + 1; poly.terms_[k].exp <= b_max_exp; k++)
+				temp.NewTerm(poly.terms_[k].coef, poly.terms_[k].exp);
+
+		if (poly.terms_[j].exp <= b_max_exp)
+			for (int l = i + 1; terms_[l].exp <= a_max_exp; l++)
+				temp.NewTerm(terms_[l].coef, terms_[l].exp);
+
+	}
 
 	// TODO:
 

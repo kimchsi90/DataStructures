@@ -43,7 +43,7 @@ int Polynomial::MaxDegree()
 void Polynomial::NewTerm(const float coef, const int exp)
 {
 	assert(exp < capacity_); // exp가 너무 크면 resize 하도록 구현할 수도 있음
-
+	coeffs_[exp] = coef;
 	// TODO: 쉬워요
 }
 
@@ -54,6 +54,8 @@ Polynomial Polynomial::Add(const Polynomial& poly)
 	Polynomial temp(this->MaxDegree());
 
 	// TODO:
+	for (int i=0;i<capacity_;i++)
+		temp.coeffs_[i] = coeffs_[i] + poly.coeffs_[i];
 
 	return temp;
 }
@@ -68,6 +70,18 @@ Polynomial Polynomial::Mult(const Polynomial& poly)
 
 	// TODO: 항상 인덱싱 오류 조심
 
+	for (int i=0;i<this->capacity_;i++)
+	{
+		if (coeffs_[i] == 0.0f)
+			continue;
+		for (int j=0; j<poly.capacity_;j++)
+		{
+			if (capacity_ <= i+j)
+				break;
+			temp.coeffs_[i+j] += coeffs_[i] * poly.coeffs_[j];
+		}
+	}
+
 	return temp;
 }
 
@@ -77,6 +91,9 @@ float Polynomial::Eval(float x)
 
 	// TODO:
 	// 힌트 std::powf(2.0f, float(3)); // 2.0f^3.0f = 8.0f (2.0f의 3.0f 제곱)
+
+	for (int i=0;i<capacity_;i++)
+		temp += coeffs_[i] * powf(x, float(i));
 
 	return temp;
 }

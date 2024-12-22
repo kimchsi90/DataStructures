@@ -20,8 +20,14 @@ void RecurPermutations(char* arr, int left, int right)
 		// - for, swap(), 재귀호출
 		// - 같은 변수끼리도 swap() 가능
 		// - right는 고정
-
+		
 		// TODO:
+		for (int i = left; i <= right; i++)
+		{
+			swap(arr[left], arr[i]);
+			RecurPermutations(arr, left + 1, right);
+			swap(arr[left], arr[i]); // swap된 값을 다시 swap하여 원래대로 되돌리기
+		}
 	}
 }
 
@@ -60,8 +66,8 @@ int main()
 	RecurPermutations(arr, 0, 2);
 	cout << endl;
 
-	// RecurPermutations(arr, 0, 3);
-	// cout << endl;
+	RecurPermutations(arr, 0, 3);
+	cout << endl;
 
 	return 0;
 }

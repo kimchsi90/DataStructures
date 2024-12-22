@@ -9,7 +9,7 @@ int BinarySearch(int* arr, int n, int x)
 	int left = 0;
 	int right = n - 1;
 
-	while (left <= right)
+	while (left <= right) // 찾고자 하는 값이 없을 경우 left가 right보다 커짐
 	{
 		int middle = (left + right) / 2; // 정수 나누기 (버림)
 
@@ -40,21 +40,12 @@ int RecurBinarySearch(int* arr, int left, int right, int x) // n 대신에 left,
 	if (left <= right)
 	{
 		int middle = (left + right) / 2;
-
 		if (x < arr[middle])
-		{
-			return -1; // TODO:
-		}
+			return RecurBinarySearch(arr, left, middle - 1, x);
 		else if (x > arr[middle])
-		{
-			return -1; // TODO:
-		}
-		else
-		{
-			return -1; // TODO:
-		}
+			return RecurBinarySearch(arr, middle + 1, right, x);
+		else return middle; // TODO:
 	}
-
 	return -1;
 }
 
@@ -63,8 +54,8 @@ int main()
 	int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 	int n = sizeof(arr) / sizeof(arr[0]);
 
-	cout << BinarySearch(arr, n, -2) << endl;
-	cout << RecurBinarySearch(arr, 0, n - 1, -2) << endl;
+	cout << BinarySearch(arr, n, 9) << endl;
+	cout << RecurBinarySearch(arr, 0, n - 1, 9) << endl;
 
 	return 0;
 }
